@@ -1,11 +1,7 @@
 import unittest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-<<<<<<< HEAD
-
-=======
 import random
->>>>>>> edit fuctional_test
 
 
 class NewVisitorTest(unittest.TestCase):  
@@ -16,7 +12,6 @@ class NewVisitorTest(unittest.TestCase):
         self.browser.quit()
 
     def test_can_start_a_math(self):  
-<<<<<<< HEAD
         #Jump heard a game about math so he chose to visit the website
         #On the website there’s a title name math888
         self.browser.get("http://localhost:8000")  
@@ -63,7 +58,6 @@ class NewVisitorTest(unittest.TestCase):
 
         login_link = self.browser.find_element(By.LINK_TEXT, 'Login')
         self.assertIsNotNone(login_link)
-=======
          #Jump heard a game about math so he chose to visit the website
         self.browser.get("http://localhost:8000/")  
 
@@ -119,7 +113,6 @@ class NewVisitorTest(unittest.TestCase):
 
         print(username, password)
         
->>>>>>> edit fuctional_test
 
         #He found a homepage with 3 difficult gameplay to choose easy, medium, hard 
 
