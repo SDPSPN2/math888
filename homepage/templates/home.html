@@ -1,0 +1,76 @@
+{% load django_bootstrap5 %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math888</title>
+
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+
+    <link rel="stylesheet" href="{% static 'home.css' %}">
+
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <!-- Logo -->
+            <a class="navbar-brand" href="#">MATH888</a>
+
+            <!-- Navbar Toggler (สำหรับมือถือ) -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <!-- Center Menu -->
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+                </ul>
+            </div>
+
+            <div>
+                {% if user.is_authenticated %}
+                <span class="text-white me-3">Username {{ user.username }}</span>
+                <a href="{% url 'logout' %}" class="btn btn-outline-light">LOGOUT</a>
+                {% else %}
+                <a href="{% url 'login' %}" class="btn btn-outline-light">LOGIN</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <a href="{% if user.is_authenticated %}https://www.google.com{% else %}{% url 'login' %}{% endif %}">
+        <div class="content">
+            <div class="box1 box"></div>
+            <div class="box2 box"></div>
+            <div class="box3 box"></div>
+            <div class="box4 box"></div>
+    
+            <div class="circle1 circle"></div>
+            <div class="circle2 circle"></div>
+            <div class="circle3 circle"></div>
+            <div class="circle4 circle"></div>
+    
+            <div class="main-container">
+                <div class="math-box">
+                    <h1>MATH888</h1>
+                </div>
+            </div>
+    
+            <div class="textClick">
+                <h2>Click to start</h2>
+            </div>
+        </div>
+    </a>
+
+</body>
+<script src="{% static 'home.js' %}"></script>
+
+</html>
