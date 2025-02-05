@@ -2,10 +2,6 @@ import unittest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import random
-<<<<<<< HEAD
-
-=======
->>>>>>> de44d67c05304d99ecec8bb9a9b23faf2e3e881d
 
 
 class NewVisitorTest(unittest.TestCase):  
@@ -62,13 +58,7 @@ class NewVisitorTest(unittest.TestCase):
 
         login_link = self.browser.find_element(By.LINK_TEXT, 'Login')
         self.assertIsNotNone(login_link)
-<<<<<<< HEAD
-        
-    def test_try_register_with_random(self):
-        #Jump heard a game about math so he chose to visit the website
-=======
          #Jump heard a game about math so he chose to visit the website
->>>>>>> de44d67c05304d99ecec8bb9a9b23faf2e3e881d
         self.browser.get("http://localhost:8000/")  
 
         #On the website there’s a title name math888
@@ -120,12 +110,9 @@ class NewVisitorTest(unittest.TestCase):
         # Now, check if the username is displayed in the homepage
         user_display = self.browser.find_element(By.CSS_SELECTOR, ".text-white.me-3")
         self.assertIn(f"Username {username}", user_display.text)
-<<<<<<< HEAD
-=======
 
         print(username, password)
         
->>>>>>> de44d67c05304d99ecec8bb9a9b23faf2e3e881d
 
         #He found a homepage with 3 difficult gameplay to choose easy, medium, hard 
 
