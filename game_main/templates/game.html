@@ -9,10 +9,23 @@
     <link rel="stylesheet" href="{% static 'game.css' %}">
 </head>
 <body>
-    <div class="container">
-      <div class="title">
-        <h1>MATH888</h1>
-      </div>
+    <div class="main-title">
+        <h1>Math888</h1>
     </div>
+
+    <div class="input-container">
+      <label for="equationInput">Enter an equation (ex. y = 4x + 1):</label>
+      <input type="text" id="equationInput" placeholder="y = mx + b">
+      
+      <label for="degreeInput">Enter degree (0-360°):</label>
+      <input type="number" id="degreeInput" min="0" max="360" placeholder="0-360">
+      
+      <button id="plotButton">Plot Graph</button>
+    </div>
+    
+    <canvas id="graphCanvas"></canvas>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.0.0/math.min.js"></script>
+    <script src="{% static 'game_main.js' %}"></script>
 </body>
 </html>

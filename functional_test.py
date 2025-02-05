@@ -1,6 +1,7 @@
 import unittest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+import random
 
 
 
@@ -58,6 +59,60 @@ class NewVisitorTest(unittest.TestCase):
 
         login_link = self.browser.find_element(By.LINK_TEXT, 'Login')
         self.assertIsNotNone(login_link)
+        
+    def test_try_register_with_random(self):
+        #Jump heard a game about math so he chose to visit the website
+        self.browser.get("http://localhost:8000/")  
+
+        #On the website there’s a title name math888
+        self.assertIn("Math888", self.browser.title)  
+
+        #He found a homepage with a text saying "Click to Start".
+        content_div = self.browser.find_element("xpath", "//div[@class='content']")
+        content_div.click()
+
+        #Since Jump hadn’t logged in yet, the system redirected him to the login page.
+        self.assertIn("Login", self.browser.title)  
+
+        # But since Jump didn’t have an account, he clicked on Register.
+        register_link = self.browser.find_element("xpath", "//div[@class='registerAccount']/a")
+        register_link.click()
+        self.assertIn("Register", self.browser.title)  
+
+
+        userNum = random.randint(0,999999)
+        username = "test" + str(userNum)
+        charactername = "betaTester" + str(userNum)
+        email = f"test{userNum}@gmail.com"
+        password = 1234
+
+    #   Then, Jump entered his information to sign up for the game.
+        self.browser.find_element(By.NAME, "username").send_keys(username)
+        self.browser.find_element(By.NAME, "charactername").send_keys(charactername)
+        self.browser.find_element(By.NAME, "email").send_keys(email)
+        self.browser.find_element(By.NAME, "password1").send_keys(password)
+        self.browser.find_element(By.NAME, "password2").send_keys(password)
+
+        self.browser.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
+
+        # When he clicked the Submit button, the system redirected Jump to the login page.
+        # Jump entered his credentials and clicked Login.
+
+        self.assertIn("Login", self.browser.title)  
+
+
+           
+        self.browser.find_element(By.NAME, "username").send_keys(username)
+        self.browser.find_element(By.NAME, "password").send_keys(password)
+        self.browser.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
+
+
+         # The system then brought Jump back to the homepage.
+        self.assertIn("Math888", self.browser.title)  
+
+        # Now, check if the username is displayed in the homepage
+        user_display = self.browser.find_element(By.CSS_SELECTOR, ".text-white.me-3")
+        self.assertIn(f"Username {username}", user_display.text)
 
         #He found a homepage with 3 difficult gameplay to choose easy, medium, hard 
 
