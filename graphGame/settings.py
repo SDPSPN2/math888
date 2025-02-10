@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     'game_main',
     'homepage',
     'users',
+    'channels',
+    'channels_redis',
     "django_bootstrap5",
     'django.contrib.admin',
     'django.contrib.auth',
@@ -44,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -73,7 +76,28 @@ TEMPLATES = [
     },
 ]
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    },
+}
+
 WSGI_APPLICATION = 'graphGame.wsgi.application'
+ASGI_APPLICATION = "graphGame.asgi.application"
+
+
+
+
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": [('127.0.0.1', 6379)],  
+#         },
+#     },
+# }
+
+
 
 
 # Database

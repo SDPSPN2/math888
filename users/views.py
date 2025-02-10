@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import authenticate, login  # ✅ เพิ่ม import
+from django.contrib.auth import authenticate, login 
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 
@@ -25,7 +25,7 @@ def register(request):
                 user = User.objects.create_user(username=username, character_name=charactername, email=email, password=password1)
                 user.save()
                 messages.success(request, "Account created successfully!")
-                return redirect("login")  # ✅ เพิ่มให้ redirect ไปหน้า login
+                return redirect("login") 
 
         else:
             messages.error(request, "Passwords do not match.")
@@ -38,12 +38,10 @@ def login_view(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-        print(username, password)
-
         user = authenticate(request, username=username, password=password)  
         if user is not None:
             login(request, user)
-            return redirect('home')
+            return redirect('game')
         else:
             messages.error(request, "Invalid username or password.") 
 
