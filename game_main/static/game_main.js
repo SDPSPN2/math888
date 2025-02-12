@@ -1,25 +1,32 @@
 let playerX = 0; 
 let playerY = 0;  
+let enemy;
 
-setInterval(function() {
-    fetch('/game/update/', {
+function startUpdatingDataOnce() {
+    let endpoint = window.location.href.includes("test") ? "/game/update/test/" : "/game/update/";
+
+    fetch(endpoint, {
         method: 'GET',
     })
     .then(response => response.json())
     .then(data => {
-        // console.log(data.message); 
-        // console.log(data.player);
         plotPointsFromArray(data.message);
-        
-        playerX = (data.player[0]*40);
-        playerY = (data.player[1]*40);
-        drawPoint(playerX, playerY, "green");
+        enemy = data.message;
 
+        playerX = (data.player[0] * 40);
+        playerY = (data.player[1] * 40);
+        drawPoint(playerX, playerY, "green");
     })
     .catch(error => console.error('Error:', error));
-}, 100);
+}
+
 
 function plotPointsFromArray(pointsArray) {
+    // Clear the canvas before plotting new points
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawGridAndAxes();
+    drawPoint(playerX, playerY, "green");
+
     pointsArray.forEach(point => {
         let x = point[0] * 40;
         let y = point[1] * 40;
@@ -29,35 +36,26 @@ function plotPointsFromArray(pointsArray) {
         let canvasY = y;  // Invert y for canvas coordinates (y grows downwards)
         
         // Plot the point in red color
-        drawPoint(canvasX, canvasY, "red");
+        drawPoint(canvasX, canvasY, "rgb(255,0,0)");
     });
 }
+
 
 // Function to plot a single point
 function drawPoint(x, y, color) {
     ctx.beginPath();
-    ctx.arc(x+ randomOrigin.x, randomOrigin.y - y, 5, 0, 2 * Math.PI);  // Draw a circle with radius 5
-    ctx.fillStyle = color;  // Set point color to red
+    ctx.arc(x + randomOrigin.x, randomOrigin.y - y, 5, 0, 2 * Math.PI);  
+    ctx.fillStyle = color === "red" ? "rgb(255, 0, 0)" : color;  
     ctx.fill();
 }
-
-
 
 const equationInput = document.getElementById("equationInput");
 const degreeInput = document.getElementById("degreeInput");
 const plotButton = document.getElementById("plotButton");
 const canvas = document.getElementById("graphCanvas");
 const ctx = canvas.getContext("2d");
- // .then(response => response.json())
-    // .then(data => {
-    //     console.log("Data from server:", data);
-    //     drawGridAndAxes();
-    //     animateGraph(data.pointsArray);  // ใช้ pointsArray ที่ส่งมาจาก server
-    // })
-    // .catch(error => {
-    //     console.error('Error:', error);
-    // });
-// Store the random origin
+ 
+
 let randomOrigin = { x: window.innerWidth/2, y: (window.innerHeight-120)/2 };
 
 // Function to generate a random origin anywhere in the canvas
@@ -106,14 +104,8 @@ function drawGridAndAxes() {
 
     ctx.stroke();
 
-    // Mark the random origin
-    // ctx.beginPath();
-    // ctx.arc(randomOrigin.x, randomOrigin.y, 5, 0, 2 * Math.PI);
-    // ctx.fillStyle = "green";
-    // ctx.fill();
 }
 
-// Function to parse the equation and ignore "b"
 function parseEquation(eq) {
     eq = eq.replace(/\s+/g, '');
     const regex = /^y\s*=\s*([-+]?[0-9]*\.?[0-9]*)x([-+]?[0-9]*\.?[0-9]*)?/i;
@@ -127,75 +119,50 @@ function parseEquation(eq) {
         return null;
     }
 }
-
-// Function to animate the graph plotting
-// function animateGraph(equation, degree) {
-//     let m = parseEquation(equation);
-//     if (m === null) return;
-
-//     degree = parseFloat(degree);
-//     if (isNaN(degree) || degree < 0 || degree > 360) {
-//         alert("Please enter a valid degree (0-360°)");
-//         return;
-//     }
-
-//     // Convert degree to radians
-//     let radians = (degree * Math.PI) / 180;
-//     let dx = Math.cos(radians);
-//     let dy = Math.sin(radians);
-
-//     // Set animation properties
-//     let length = Math.max(canvas.width, canvas.height) * 0.8;
-//     let step = 2; // Speed of animation
-//     let progress = 0;
-
-//     function drawAnimatedLine() {
-//         if (progress > length) return;
-
-//         // Draw segment
-//         ctx.beginPath();
-//         ctx.strokeStyle = "blue";
-//         ctx.lineWidth = 2;
-//         ctx.moveTo(randomOrigin.x+playerX, randomOrigin.y - playerY);
-//         ctx.lineTo((randomOrigin.x+playerX) + dx * progress, (randomOrigin.y - playerY) - dy * progress);
-//         ctx.stroke();
-
-//         progress += step; // Increase length
-//         requestAnimationFrame(drawAnimatedLine); // Continue animation
-//     }
-
-//     drawAnimatedLine(); // Start animation
-// }
-
-let pointsArray = [
-    [0, 0],  // จุดที่ 1
-    [100, 100],  // จุดที่ 2
-    [200, 200],  // จุดที่ 3
-    [300, 300],
-   
-];
 function animateGraph(pointsArray) {
-    let step = 2; // Speed of animation
+    let step = 2; 
     let progress = 0;
-    let currentPointIndex = 0; // เริ่มจากจุดแรกในอาเรย์
+    let currentPointIndex = 0;
+
+    function isPointCollidingWithEnemy(x, y) {
+        for (let i = 0; i < enemy.length; i++) {
+            let enemyX = enemy[i][0] * 40 + randomOrigin.x;
+            let enemyY = canvas.height - (enemy[i][1] * 40 + randomOrigin.y);
+    
+            let distance = Math.sqrt(Math.pow(x - enemyX, 2) + Math.pow(y - enemyY, 2));
+            
+            if (distance < 5) {  
+                // ลบจุดที่ชนออกจากอาเรย์
+                let deletedPoint = enemy.splice(i, 1)[0]; // เก็บจุดที่ถูกลบ
+            
+                console.log("Deleted point:", deletedPoint);
+                sendDeletedPointToServer(deletedPoint);
+    
+                plotPointsFromArray(enemy);
+    
+    
+                return true; 
+            }
+        }
+        return false;
+    }
+
     function drawAnimatedLine() {
         if (currentPointIndex >= pointsArray.length - 1) return; // หยุดเมื่อถึงจุดสุดท้ายในอาเรย์
 
         // Get current and next points from pointsArray
         let startX = pointsArray[currentPointIndex][0] + randomOrigin.x + playerX;
-        let startY = canvas.height - (pointsArray[currentPointIndex][1] + randomOrigin.y + playerY); // คำนวณตำแหน่ง y ให้เพิ่มขึ้นจากล่างขึ้นบน
+        let startY = canvas.height - (pointsArray[currentPointIndex][1] + randomOrigin.y + playerY);
         let endX = pointsArray[currentPointIndex + 1][0] + randomOrigin.x + playerX;
-        let endY = canvas.height - (pointsArray[currentPointIndex + 1][1] + randomOrigin.y + playerY); // คำนวณตำแหน่ง y สำหรับจุดถัดไป
+        let endY = canvas.height - (pointsArray[currentPointIndex + 1][1] + randomOrigin.y + playerY);
 
-        // การคำนวณส่วนที่ควรจะวาดระหว่างจุด
-        let dxToDraw = (endX - startX) / 50; // จำนวน step ที่จะค่อยๆ วาด
+        let dxToDraw = (endX - startX) / 50;
         let dyToDraw = (endY - startY) / 50;
 
-        // คำนวณพิกัดที่จะแสดงระหว่างจุด
         let currentX = startX + dxToDraw * progress;
         let currentY = startY + dyToDraw * progress;
 
-        // วาดเส้นในระหว่างสองจุด
+        // วาดเส้นระหว่างสองจุด
         ctx.beginPath();
         ctx.strokeStyle = "blue";
         ctx.lineWidth = 2;
@@ -203,26 +170,24 @@ function animateGraph(pointsArray) {
         ctx.lineTo(currentX, currentY);
         ctx.stroke();
 
-        progress += step; // เพิ่มความยาวในการลากเส้น
+        // ตรวจสอบว่าจุดที่วาดชนกับศัตรูหรือไม่
+        if (isPointCollidingWithEnemy(currentX, currentY)) {
+            return; // หยุดการวาดหากชนกับจุดใน enemy
+        }
 
-        if (progress > 50) { // ถ้าผ่านไป 50 step แล้วให้ไปยังจุดถัดไป
+        progress += step;
+
+        if (progress > 50) {
             progress = 0;
             currentPointIndex++; // ขยับไปที่จุดถัดไปในอาเรย์
         }
 
-        requestAnimationFrame(drawAnimatedLine); // ทำให้อนิเมชั่นเดินต่อไป
+        requestAnimationFrame(drawAnimatedLine);
     }
 
-    drawAnimatedLine(); // เริ่มการอนิเมชั่น
+    drawAnimatedLine();
 }
 
-
-
-// // Event listener for the plot button
-// plotButton.addEventListener("click", function () {
-//     drawGridAndAxes();
-//     animateGraph(pointsArray);
-// });
 
 function getCookie(name) {
     let cookieValue = null;
@@ -255,24 +220,48 @@ plotButton.addEventListener("click", function () {
     .then(data => {
         console.log("Data from server:", data.pointsArray);
         drawGridAndAxes();
+        plotPointsFromArray(enemy);
+        drawPoint(playerX, playerY, "green");
         animateGraph(data.pointsArray); 
-        // animateGraph(pointsArray); 
     })
     .catch(error => {
         console.error('Error:', error);
     });
 });
 
+function sendDeletedPointToServer(deletedPoint) {
+    const csrfToken = getCookie('csrftoken');
+    
+    fetch('/game/delete_enemy/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify({
+            point: deletedPoint  
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Server response:', data);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
 
-// Set up canvas on page load
+
 window.onload = function () {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight - 120;
 
-    console.log(window.innerWidth);
-    console.log(window.innerHeight-120);
+    // console.log(window.innerWidth);
+    // console.log(window.innerHeight-120);
+
     
-    // generateRandomOrigin();
+    startUpdatingDataOnce()
+    startUpdatingDataOnce()
     drawGridAndAxes();
 };
 
