@@ -260,8 +260,8 @@ class NewVisitorTest(unittest.TestCase):
         self.browser.get("http://127.0.0.1:8000/game/test")
         self.assertIn("Math888", self.browser.title)
 
-        img1 = "before_shoot.png"
-        img2 = "after_shoot.png"
+        img1 = "before_shoot_not_hit.png"
+        img2 = "after_shoot_not_hit.png"
 
         canvas = self.browser.find_element(By.ID, "graphCanvas")
         time.sleep(2)
