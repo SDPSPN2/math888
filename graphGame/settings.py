@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'homepage',
     'users',
     'channels',
+    'select_difficulty',
     'channels_redis',
     "django_bootstrap5",
     'django.contrib.admin',
