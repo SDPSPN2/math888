@@ -164,7 +164,7 @@ function animateGraph(pointsArray) {
 
         // วาดเส้นระหว่างสองจุด
         ctx.beginPath();
-        ctx.strokeStyle = "blue";
+        ctx.strokeStyle = "rgb(0, 0, 255)";
         ctx.lineWidth = 2;
         ctx.moveTo(startX, startY);
         ctx.lineTo(currentX, currentY);
