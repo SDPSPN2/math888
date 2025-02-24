@@ -15,9 +15,5 @@ class GameControl(Player, GameEnvironment):
         self.client =  WebSocketClient("ws://localhost:8001/ws/game/")
         
         self.targetPosition = self.generate_target_position(10)
-        self.playerPosition = self.random_player_position()
-
-
-
-    
+        self.playerPosition = self.random_player_position() 
        

@@ -1,0 +1,17 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    background: rgb(240, 240, 240);
+    
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+.nav-item a {
+    font-size: 1.2rem;
+    margin: 0 10px;
+}
+
+ 

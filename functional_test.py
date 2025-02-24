@@ -155,42 +155,42 @@ class NewVisitorTest(unittest.TestCase):
             cropped_after.save(img2)
 
 
-    def test_draw_graph(self):
-        self.browser.get("http://127.0.0.1:8000/game/")
-        self.assertIn("Math888", self.browser.title)
+    # def test_draw_graph(self):
+    #     self.browser.get("http://127.0.0.1:8000/game/")
+    #     self.assertIn("Math888", self.browser.title)
 
-        img1 = "before.png"
-        img2 = "after.png"
+    #     img1 = "before.png"
+    #     img2 = "after.png"
 
-        canvas = self.browser.find_element(By.ID, "graphCanvas")
-        time.sleep(2)
-        canvas.screenshot(img1)
+    #     canvas = self.browser.find_element(By.ID, "graphCanvas")
+    #     time.sleep(2)
+    #     canvas.screenshot(img1)
 
-        equation_input = self.browser.find_element(By.ID, "equationInput")
-        equation_input.send_keys("y= 2*x")
+    #     equation_input = self.browser.find_element(By.ID, "equationInput")
+    #     equation_input.send_keys("y= 2*x")
 
-        plot_button = self.browser.find_element(By.ID, "plotButton")
-        plot_button.click()
+    #     plot_button = self.browser.find_element(By.ID, "plotButton")
+    #     plot_button.click()
 
  
-        time.sleep(2)
-        canvas.screenshot(img2)
+    #     time.sleep(2)
+    #     canvas.screenshot(img2)
 
-        self.crop_image_test(img1, img2)
+    #     self.crop_image_test(img1, img2)
 
-        # โหลดภาพ
-        before = Image.open("before.png")
-        after = Image.open("after.png")
+    #     # โหลดภาพ
+    #     before = Image.open("before.png")
+    #     after = Image.open("after.png")
 
-        # คำนวณความแตกต่างของภาพ
-        diff = ImageChops.difference(before, after)
+    #     # คำนวณความแตกต่างของภาพ
+    #     diff = ImageChops.difference(before, after)
 
-        diff_array = np.array(diff)
+    #     diff_array = np.array(diff)
 
-        # เช็คว่ามีพิกเซลที่แตกต่างกันหรือไม่
-        is_different = np.any(diff_array > 0)  
+    #     # เช็คว่ามีพิกเซลที่แตกต่างกันหรือไม่
+    #     is_different = np.any(diff_array > 0)  
 
-        self.assertTrue(is_different, "Canvas ไม่เปลี่ยนแปลงหลังจากวาดกราฟ")
+    #     self.assertTrue(is_different, "Canvas ไม่เปลี่ยนแปลงหลังจากวาดกราฟ")
 
     def test_not_draw_graph(self):
         self.browser.get("http://127.0.0.1:8000/game")
@@ -292,6 +292,47 @@ class NewVisitorTest(unittest.TestCase):
                 break
 
         self.assertTrue(found_red_pixel, "ยิงไม่โดนเเต่เป้าหาย")
+
+    def test_draw_graph(self):
+        self.browser.get("http://127.0.0.1:8000/game/")
+        self.assertIn("Math888", self.browser.title)
+
+        img1 = "before.png"
+        img2 = "after.png"
+
+        canvas = self.browser.find_element(By.ID, "graphCanvas")
+        time.sleep(2)
+        canvas.screenshot(img1)
+
+        equation_input = self.browser.find_element(By.ID, "equationInput")
+        equation_input.send_keys("y= 2*x")
+
+        plot_button = self.browser.find_element(By.ID, "plotButton")
+        plot_button.click()
+
+        time.sleep(2)
+        canvas.screenshot(img2)
+
+        # โหลดภาพ
+        before = Image.open(img1)
+        after = Image.open(img2)
+
+        # แปลงภาพเป็น array ของ numpy
+        before_array = np.array(before)
+        after_array = np.array(after)
+
+        # ฟังก์ชันตรวจหาจำนวนพิกเซลสีน้ำเงิน (RGB)
+        def count_blue_pixels(image_array):
+            blue_threshold = 100  # ปรับค่าตามสีของกราฟ
+            blue_pixels = (image_array[:, :, 2] > blue_threshold) & (image_array[:, :, 0] < blue_threshold) & (image_array[:, :, 1] < blue_threshold)
+            return np.sum(blue_pixels)
+
+        # นับจำนวนพิกเซลสีน้ำเงินก่อนและหลัง
+        blue_before = count_blue_pixels(before_array)
+        blue_after = count_blue_pixels(after_array)
+
+        # ตรวจสอบว่าพิกเซลสีน้ำเงินต้องเพิ่มขึ้น
+        self.assertTrue(blue_after > blue_before, "Canvas ไม่มีกราฟที่ถูกเพิ่มเข้ามา")
 
 
 

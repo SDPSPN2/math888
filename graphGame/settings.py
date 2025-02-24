@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'game_main',
     'homepage',
     'users',
+    'lobby',
     'channels',
     'select_difficulty',
     'channels_redis',

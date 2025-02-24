@@ -1,20 +1,20 @@
 {% load django_bootstrap5 %}
 {% load static %}
-{% csrf_token %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math888</title>
+    <title>Game Room</title>
+
 
     {% bootstrap_css %}
     {% bootstrap_javascript %}
-    
-    {% load static %}  
-    <link rel="stylesheet" href="{% static 'game.css' %}">
+
+    <link rel="stylesheet" href="{% static 'room.css' %}">
 </head>
-<body>
+<body data-username="{{ user.username }}"">
+
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <!-- Logo -->
@@ -44,21 +44,13 @@
         </div>
     </nav>
 
-    <div class="input-container">
-      <label for="equationInput">Enter an equation (ex. y = 4x + 1):</label>
-      <input type="text" id="equationInput" placeholder="y = mx + b">
-<!--       
-      <label for="degreeInput">Enter degree (0-360°):</label>
-      <input type="number" id="degreeInput" min="0" max="360" placeholder="0-360">
-       -->
-      <button id="plotButton">Plot Graph</button>
-      <!-- <button id="test">test</button> -->
-    </div>
-    
-    <canvas id="graphCanvas"></canvas>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.0.0/math.min.js"></script>
-    <script src="{% static 'game_main.js' %}"></script>
-    <script src="{% static 'game.js' %}"></script>
+    <h1>Welcome to Room: <span id="roomName"></span></h1>
+    <p>Players in room: <span id="playerCount">0</span></p>
+    <button class="btn btn-danger" onclick="leaveRoom()">Leave Room</button>
+    <button class="btn btn-success" onclick="startGame()">Start Game</button>
+
+  
 </body>
+
+<script src="{% static 'room.js' %}"></script>
 </html>
