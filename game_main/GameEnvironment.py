@@ -8,7 +8,7 @@ class GameEnvironment:
     def generate_target_position(self, num:int):
         position = []
         for i in range(0, num):
-            x = random.randint(-self.maxX, self.maxX)
+            x = random.randint(1, self.maxX)
             y = random.randint(-self.maxY, self.maxY)
 
             position.append([x,y])

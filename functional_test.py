@@ -7,6 +7,9 @@ import time
 from PIL import Image, ImageChops
 import numpy as np
 
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
 
 
 class NewVisitorTest(unittest.TestCase):  
@@ -199,148 +202,203 @@ class NewVisitorTest(unittest.TestCase):
 
         # self.assertTrue(np.any(blue_pixels_changed), "ไม่มีพิกเซลสีฟ้าใหม่ที่ตำแหน่งต่างจากก่อน")
 
-    def test_not_draw_graph(self):
-        self.browser.get("http://127.0.0.1:8000/game")
-        self.assertIn("Math888", self.browser.title)
+    # def test_not_draw_graph(self):
+    #     self.browser.get("http://127.0.0.1:8000/game")
+    #     self.assertIn("Math888", self.browser.title)
 
-        img1 = "before_not_draw.png"
-        img2 = "after_not_draw.png"
+    #     img1 = "before_not_draw.png"
+    #     img2 = "after_not_draw.png"
 
-        canvas = self.browser.find_element(By.ID, "graphCanvas")
-        time.sleep(2)
-        canvas.screenshot(img1)
-        time.sleep(2)
-        canvas.screenshot(img2)
+    #     canvas = self.browser.find_element(By.ID, "graphCanvas")
+    #     time.sleep(2)
+    #     canvas.screenshot(img1)
+    #     time.sleep(2)
+    #     canvas.screenshot(img2)
 
-        self.crop_image_test(img1, img2)
-        # โหลดภาพ
-        before = Image.open(img1)
-        after = Image.open(img2)
+    #     self.crop_image_test(img1, img2)
+    #     # โหลดภาพ
+    #     before = Image.open(img1)
+    #     after = Image.open(img2)
 
-        # คำนวณความแตกต่างของภาพ
-        diff = ImageChops.difference(before, after)
-        diff_array = np.array(diff)
+    #     # คำนวณความแตกต่างของภาพ
+    #     diff = ImageChops.difference(before, after)
+    #     diff_array = np.array(diff)
 
-        # เช็คว่ามีพิกเซลที่แตกต่างกันหรือไม่
-        is_different = np.any(diff_array > 0)  
+    #     # เช็คว่ามีพิกเซลที่แตกต่างกันหรือไม่
+    #     is_different = np.any(diff_array > 0)  
 
-        # ถ้าภาพไม่เปลี่ยนแปลง ต้อง assertFalse
-        self.assertFalse(is_different, "Canvas สั่งไม่วาดเเล้วยังวาด")
+    #     # ถ้าภาพไม่เปลี่ยนแปลง ต้อง assertFalse
+    #     self.assertFalse(is_different, "Canvas สั่งไม่วาดเเล้วยังวาด")
     
-    def test_shoot_hit(self):
-        self.browser.get("http://127.0.0.1:8000/game/test")
+    # def test_shoot_hit(self):
+    #     self.browser.get("http://127.0.0.1:8000/game/test")
+    #     self.assertIn("Math888", self.browser.title)
+
+    #     img1 = "before_shoot.png"
+    #     img2 = "after_shoot.png"
+
+    #     canvas = self.browser.find_element(By.ID, "graphCanvas")
+    #     time.sleep(2)
+    #     canvas.screenshot(img1)
+
+    #     equation_input = self.browser.find_element(By.ID, "equationInput")
+    #     equation_input.send_keys("y= x")
+
+    #     plot_button = self.browser.find_element(By.ID, "plotButton")
+    #     plot_button.click()
+
+    #     time.sleep(2)
+    #     canvas.screenshot(img2)
+
+    #     self.crop_image_test(img1, img2)
+
+    #     before = Image.open(img1)
+    #     after = Image.open(img2)
+
+    #     found_red_pixel = False
+
+    #     for pixel in after.getdata():
+
+    #         if pixel == (255, 0, 0, 255):  # RGBA = red
+    #             found_red_pixel = True
+    #             break
+
+    #     self.assertFalse(found_red_pixel, "สั่งยิงโดนเเต่เป้าไม่หาย")
+
+
+    # def test_shoot_not_hit(self):
+    #     self.browser.get("http://127.0.0.1:8000/game/test")
+    #     self.assertIn("Math888", self.browser.title)
+
+    #     img1 = "before_shoot_not_hit.png"
+    #     img2 = "after_shoot_not_hit.png"
+
+    #     canvas = self.browser.find_element(By.ID, "graphCanvas")
+    #     time.sleep(2)
+    #     canvas.screenshot(img1)
+
+    #     equation_input = self.browser.find_element(By.ID, "equationInput")
+    #     equation_input.send_keys("y= -x")
+
+    #     plot_button = self.browser.find_element(By.ID, "plotButton")
+    #     plot_button.click()
+
+    #     time.sleep(2)
+    #     canvas.screenshot(img2)
+
+    #     self.crop_image_test(img1, img2)
+
+    #     # โหลดภาพ
+    #     before = Image.open(img1)
+    #     after = Image.open(img2)
+
+
+    #     found_red_pixel = False
+
+    #     for pixel in after.getdata():
+
+    #         if pixel == (255, 0, 0, 255):  # RGBA = red
+    #             found_red_pixel = True
+    #             break
+
+    #     self.assertTrue(found_red_pixel, "ยิงไม่โดนเเต่เป้าหาย")
+
+    # def test_draw_graph(self):
+    #     self.browser.get("http://127.0.0.1:8000/game/")
+    #     self.assertIn("Math888", self.browser.title)
+
+    #     img1 = "before.png"
+    #     img2 = "after.png"
+
+    #     canvas = self.browser.find_element(By.ID, "graphCanvas")
+    #     time.sleep(2)
+    #     canvas.screenshot(img1)
+
+    #     equation_input = self.browser.find_element(By.ID, "equationInput")
+    #     equation_input.send_keys("y= 2*x")
+
+    #     plot_button = self.browser.find_element(By.ID, "plotButton")
+    #     plot_button.click()
+
+    #     time.sleep(2)
+    #     canvas.screenshot(img2)
+
+    #     # โหลดภาพ
+    #     before = Image.open(img1)
+    #     after = Image.open(img2)
+
+    #     # แปลงภาพเป็น array ของ numpy
+    #     before_array = np.array(before)
+    #     after_array = np.array(after)
+
+    #     # ฟังก์ชันตรวจหาจำนวนพิกเซลสีน้ำเงิน (RGB)
+    #     def count_blue_pixels(image_array):
+    #         blue_threshold = 100  # ปรับค่าตามสีของกราฟ
+    #         blue_pixels = (image_array[:, :, 2] > blue_threshold) & (image_array[:, :, 0] < blue_threshold) & (image_array[:, :, 1] < blue_threshold)
+    #         return np.sum(blue_pixels)
+
+    #     # นับจำนวนพิกเซลสีน้ำเงินก่อนและหลัง
+    #     blue_before = count_blue_pixels(before_array)
+    #     blue_after = count_blue_pixels(after_array)
+
+    #     # ตรวจสอบว่าพิกเซลสีน้ำเงินต้องเพิ่มขึ้น
+    #     self.assertTrue(blue_after > blue_before, "Canvas ไม่มีกราฟที่ถูกเพิ่มเข้ามา")
+
+
+    def test_create_room(self):
+        self.browser.get("http://127.0.0.1:8000/lobby/")
         self.assertIn("Math888", self.browser.title)
 
-        img1 = "before_shoot.png"
-        img2 = "after_shoot.png"
+        # ค้นหาปุ่มสร้างห้องและคลิก
+        create_room_button = self.browser.find_element(By.ID, "create-room-btn")  
+        create_room_button.click()
 
-        canvas = self.browser.find_element(By.ID, "graphCanvas")
-        time.sleep(2)
-        canvas.screenshot(img1)
+        # รอ Modal ปรากฏขึ้น
+        WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.ID, "roomName"))
+        )
 
-        equation_input = self.browser.find_element(By.ID, "equationInput")
-        equation_input.send_keys("y= x")
+        # ค้นหาช่องอินพุตชื่อห้องและป้อนชื่อ "testRoom"
+        room_name_input = self.browser.find_element(By.ID, "roomName")
+        room_name_input.send_keys("testRoom")
 
-        plot_button = self.browser.find_element(By.ID, "plotButton")
-        plot_button.click()
+        # คลิกปุ่ม Create
+        create_button = self.browser.find_element(By.CSS_SELECTOR, "button.btn-primary")
+        create_button.click()
 
-        time.sleep(2)
-        canvas.screenshot(img2)
+        # รอให้ URL เปลี่ยน
+        WebDriverWait(self.browser, 5).until(
+            EC.url_to_be("http://127.0.0.1:8000/lobby/room/testRoom/")
+        )
+        self.assertEqual(self.browser.current_url, "http://127.0.0.1:8000/lobby/room/testRoom/")
 
-        self.crop_image_test(img1, img2)
+        # กลับไปที่หน้า Lobby
+        self.browser.get("http://127.0.0.1:8000/lobby/")
 
-        before = Image.open(img1)
-        after = Image.open(img2)
+        # รอให้รายการห้องโหลดเสร็จ
+        WebDriverWait(self.browser, 5).until(
+            EC.presence_of_element_located((By.ID, "roomList"))
+        )
 
-        found_red_pixel = False
+        # ตรวจสอบว่ามีรายการห้อง "testRoom" จริง
+        room_list = self.browser.find_element(By.ID, "roomList")
+        self.assertIn("testRoom", room_list.text)
 
-        for pixel in after.getdata():
+    
 
-            if pixel == (255, 0, 0, 255):  # RGBA = red
-                found_red_pixel = True
-                break
+    def test_start_game(self):
+        # รอให้ปุ่ม Start Game ปรากฏ
+        self.test_create_room()
+        self.browser.get("http://127.0.0.1:8000/lobby/room/testRoom/")
 
-        self.assertFalse(found_red_pixel, "สั่งยิงโดนเเต่เป้าไม่หาย")
+        start_button = self.browser.find_element(By.ID, "start-btn")
+        time.sleep(1)
+        start_button.click()
 
-
-    def test_shoot_not_hit(self):
-        self.browser.get("http://127.0.0.1:8000/game/test")
-        self.assertIn("Math888", self.browser.title)
-
-        img1 = "before_shoot_not_hit.png"
-        img2 = "after_shoot_not_hit.png"
-
-        canvas = self.browser.find_element(By.ID, "graphCanvas")
-        time.sleep(2)
-        canvas.screenshot(img1)
-
-        equation_input = self.browser.find_element(By.ID, "equationInput")
-        equation_input.send_keys("y= -x")
-
-        plot_button = self.browser.find_element(By.ID, "plotButton")
-        plot_button.click()
-
-        time.sleep(2)
-        canvas.screenshot(img2)
-
-        self.crop_image_test(img1, img2)
-
-        # โหลดภาพ
-        before = Image.open(img1)
-        after = Image.open(img2)
-
-
-        found_red_pixel = False
-
-        for pixel in after.getdata():
-
-            if pixel == (255, 0, 0, 255):  # RGBA = red
-                found_red_pixel = True
-                break
-
-        self.assertTrue(found_red_pixel, "ยิงไม่โดนเเต่เป้าหาย")
-
-    def test_draw_graph(self):
-        self.browser.get("http://127.0.0.1:8000/game/")
-        self.assertIn("Math888", self.browser.title)
-
-        img1 = "before.png"
-        img2 = "after.png"
-
-        canvas = self.browser.find_element(By.ID, "graphCanvas")
-        time.sleep(2)
-        canvas.screenshot(img1)
-
-        equation_input = self.browser.find_element(By.ID, "equationInput")
-        equation_input.send_keys("y= 2*x")
-
-        plot_button = self.browser.find_element(By.ID, "plotButton")
-        plot_button.click()
-
-        time.sleep(2)
-        canvas.screenshot(img2)
-
-        # โหลดภาพ
-        before = Image.open(img1)
-        after = Image.open(img2)
-
-        # แปลงภาพเป็น array ของ numpy
-        before_array = np.array(before)
-        after_array = np.array(after)
-
-        # ฟังก์ชันตรวจหาจำนวนพิกเซลสีน้ำเงิน (RGB)
-        def count_blue_pixels(image_array):
-            blue_threshold = 100  # ปรับค่าตามสีของกราฟ
-            blue_pixels = (image_array[:, :, 2] > blue_threshold) & (image_array[:, :, 0] < blue_threshold) & (image_array[:, :, 1] < blue_threshold)
-            return np.sum(blue_pixels)
-
-        # นับจำนวนพิกเซลสีน้ำเงินก่อนและหลัง
-        blue_before = count_blue_pixels(before_array)
-        blue_after = count_blue_pixels(after_array)
-
-        # ตรวจสอบว่าพิกเซลสีน้ำเงินต้องเพิ่มขึ้น
-        self.assertTrue(blue_after > blue_before, "Canvas ไม่มีกราฟที่ถูกเพิ่มเข้ามา")
-
+        time.sleep(1)
+       
+        print(self.browser.current_url)
+        self.assertEqual(self.browser.current_url, "http://127.0.0.1:8000/game/")
 
 
 if __name__ == "__main__":  

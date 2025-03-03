@@ -22,6 +22,11 @@ socket.onmessage = function (event) {
     if (data.command === "ROOM_CHANGED") {
         document.getElementById("playerCount").textContent = data.player_count;
     }
+
+    if(data.command === "START_GAME"){
+        window.location.href = "/game/";
+        // console.log("x")
+    }
 };
 
 function leaveRoom() {
@@ -42,5 +47,6 @@ function startGame() {
         "sender": username
     }));
 
-    // window.location.href = "/game/";
+   
+
 }

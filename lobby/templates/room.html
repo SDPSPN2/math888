@@ -13,7 +13,7 @@
 
     <link rel="stylesheet" href="{% static 'room.css' %}">
 </head>
-<body data-username="{{ user.username }}"">
+<body data-username="{{ user.username }}">
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
@@ -47,7 +47,7 @@
     <h1>Welcome to Room: <span id="roomName"></span></h1>
     <p>Players in room: <span id="playerCount">0</span></p>
     <button class="btn btn-danger" onclick="leaveRoom()">Leave Room</button>
-    <button class="btn btn-success" onclick="startGame()">Start Game</button>
+    <button id = "start-btn" class="btn btn-success" onclick="startGame()">Start Game</button>
 
   
 </body>

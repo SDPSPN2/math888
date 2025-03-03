@@ -2,7 +2,9 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 class GameConsumer(AsyncWebsocketConsumer):
-    rooms = {}  
+    rooms = {}
+    roomsAndUser = {}
+    server = {}
 
     async def connect(self):
         self.room_name = None  
@@ -10,6 +12,8 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         await self.channel_layer.group_add("lobby", self.channel_name)
         await self.channel_layer.group_add("server", self.channel_name)
+        # print("connect",self.channel_name)
+
 
         await self.send_room_list()
 
@@ -17,8 +21,8 @@ class GameConsumer(AsyncWebsocketConsumer):
         if self.room_name:
             # pass
             await self.leave_room()
-
-
+        # print("disconnect",self.channel_name, close_code)
+            
     async def receive(self, text_data):
         data = json.loads(text_data)
         command = data.get("command", "")
@@ -26,15 +30,32 @@ class GameConsumer(AsyncWebsocketConsumer):
         message = data.get("message", "")
         room_to_join = data.get("room_name", "")
 
-        # print(f"Received: command={command}, sender={sender}, message={message}")
+        print(sender, command, message)
 
-        if command == "CREATE_ROOM":
+        if command == "SERVERCONECTION":  
+            self.server["SERVERGAME"] = self.channel_name
+            # print("serverConnection",self.server)
+            # print(len(self.server))
+
+        elif command == "READY":
+            await self.channel_layer.group_send(
+                    self.room_name,{
+                        "type": "client_ready",
+                        "command": "CLIENT_READY",
+                        "room_name": self.room_name,
+                        "sender": sender,
+                    }
+                )
+
+        elif command == "CREATE_ROOM":
             new_room = message  
             if new_room not in self.rooms:
                 self.rooms[new_room] = 0 
+                self.roomsAndUser[new_room] = {}
+                self.roomsAndUser[new_room][sender] = {}
                 await self.broadcast_room_list()
             await self.change_room(new_room, sender)
-
+            # print("cr", self.server)
 
         elif command == "JOIN_ROOM":
             if room_to_join in self.rooms:
@@ -46,22 +67,13 @@ class GameConsumer(AsyncWebsocketConsumer):
                     "sender": sender
                 }))
 
-        elif command == "LEAVE_ROOM":
-            if self.room_name:
-                await self.leave_room()
-            await self.send(text_data=json.dumps({
-                "message": f"{sender} returned to lobby.",
-                "command": "ROOM_LEFT",
-                "sender": sender
-            }))
-
-
-        elif command == "START_GAME":
-            if self.room_name in self.rooms:
+        elif command == "JOIN_ROOM_SERVER":
+            if room_to_join in self.rooms:
+                await self.change_room(room_to_join, sender)
                 await self.channel_layer.group_send(
-                    "server",
+                    self.room_name,  # ส่งแค่ให้กลุ่มของห้องที่เล่นเกม
                     {
-                        "type": "broadcast_start_server",
+                        "type": "game_started",
                         "command": "START_GAME",
                         "room_name": self.room_name,
                         "sender": sender
@@ -70,36 +82,59 @@ class GameConsumer(AsyncWebsocketConsumer):
             else:
                 await self.send(text_data=json.dumps({
                     "command": "ERROR",
-                    "message": f"Room '{self.room_name}' does not exist.",
+                    "message": f"Room '{room_to_join}' does not exist.",
                     "sender": sender
                 }))
+         
 
-    
+        elif command == "LEAVE_ROOM":
+            if self.room_name:
+                await self.leave_room()
+            await self.send(text_data=json.dumps({
+                "message": f"{sender} returned to lobby.",
+                "command": "ROOM_LEFT",
+                "sender": sender
+            }))
+            # print("lr", self.server)
 
-        # elif command == "GET_ROOM_LIST":
-        #     await self.send_room_list()
 
-        # else:
-        #     if self.room_name:
-        #         await self.channel_layer.group_send(
-        #             self.room_name,
-        #             {
-        #                 "type": "chat_message",
-        #                 "message": message,
-        #                 "command": command,
-        #                 "sender": sender
-        #             }
-        #         )
-        #     else:
-        #         await self.channel_layer.group_send(
-        #             "lobby_broadcast",
-        #             {
-        #                 "type": "chat_message",
-        #                 "message": f"[Lobby] {sender}: {message}",
-        #                 "command": command,
-        #                 "sender": sender
-        #             }
-        #         )
+        elif command == "START_GAME":
+            if self.room_name in self.rooms:
+                await self.channel_layer.send(
+                    self.server["SERVERGAME"],
+                    {
+                        "type": "req_start_game",
+                        "command": "START_GAME",
+                        "room_name": self.room_name,
+                        "sender": sender,
+                        "playerInRoom":self.roomsAndUser[self.room_name]
+                    }
+                )
+               
+        elif command == "START":
+            await self.channel_layer.group_send(
+                    self.room_name,  # ส่งแค่ให้กลุ่มของห้องที่เล่นเกม
+                    {
+                        "type": "game_set_position",
+                        "command": "START",
+                        "room_name": self.room_name,
+                        "sender": sender,
+                        "message": message
+                    }
+                )
+          
+
+    async def game_set_position(self, event):
+        await self.channel_layer.group_send(
+            event["room_name"], 
+            {
+                "type": "broadcast_game_start",
+                "command": "SET_POSITION",
+                "room_name": event["room_name"],
+                "sender": event["sender"],
+                "message": event["message"]
+            }
+        )
 
     async def game_started(self, event):
         await self.channel_layer.group_send(
@@ -107,6 +142,17 @@ class GameConsumer(AsyncWebsocketConsumer):
             {
                 "type": "broadcast_game_start",
                 "command": "START_GAME",
+                "room_name": event["room_name"],
+                "sender": event["sender"]
+            }
+        )
+
+    async def game_started_server(self, event):
+        await self.channel_layer.group_send(
+            event["room_name"], 
+            {
+                "type": "broadcast_game_start",
+                "command": "START_GAME_SERVER",
                 "room_name": event["room_name"],
                 "sender": event["sender"]
             }
@@ -122,12 +168,30 @@ class GameConsumer(AsyncWebsocketConsumer):
         "message": "request start game!"
         }))
 
+    async def req_start_game(self, event):
+        await self.send(text_data=json.dumps({
+        "command": "GAME_START_CONFIG",
+        "room_name": event["room_name"],
+        "message": "request start game!",
+        "playerInRoom": event.get("playerInRoom", [])
+        }))
+
+    
+    async def client_ready(self, event):
+        await self.send(text_data=json.dumps({
+        "command": "CLIENT_READY",
+        "room_name": event["room_name"],
+        "message": "client ready!",
+        "sender":event["sender"]
+        }))
+
     async def change_room(self, new_room, sender):
         if self.room_name:
             await self.leave_room()
 
         self.room_name = new_room
         self.rooms[new_room] += 1  
+        self.roomsAndUser[new_room][sender] = self.channel_name
         await self.channel_layer.group_add(new_room, self.channel_name)
 
         await self.send(text_data=json.dumps({
@@ -142,6 +206,14 @@ class GameConsumer(AsyncWebsocketConsumer):
         if self.room_name and self.room_name in self.rooms:
             await self.channel_layer.group_discard(self.room_name, self.channel_name)
             self.rooms[self.room_name] -= 1  # ลดจำนวนผู้ใช้ในห้อง
+            
+            for key in self.roomsAndUser[self.room_name]:
+                if self.roomsAndUser[self.room_name][key] == self.channel_name:
+                    del self.roomsAndUser[self.room_name][key]
+                    break
+
+            # print(self.roomsAndUser)
+            # self.roomsAndUser[self.room_name] -= self.sender
             # if self.rooms[self.room_name] == 0:
             #     del self.rooms[self.room_name]  # ลบห้องถ้าไม่มีผู้ใช้เหลืออยู่
             #     await self.broadcast_room_list()

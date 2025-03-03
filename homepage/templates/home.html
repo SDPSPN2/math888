@@ -47,7 +47,7 @@
     </nav>
 
 
-    <a href="{% if user.is_authenticated %}{% url 'game' %}{% else %}{% url 'login' %}{% endif %}">
+    <a href="{% if user.is_authenticated %}{% url 'game' username=user.username %}{% else %}{% url 'login' %}{% endif %}">
         <div class="content">
             <div class="box1 box"></div>
             <div class="box2 box"></div>
