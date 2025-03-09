@@ -4,6 +4,9 @@ document.getElementById("roomName").textContent = roomName;
 const username = document.body.getAttribute("data-username");
 const socket = new WebSocket("ws://127.0.0.1:8001/ws/game/server/");
 
+// const socket = new WebSocket("ws://frank11775.pythonanywhere.com:80/ws/game/server/");
+console.log("run")
+
 socket.onopen = function () {
     console.log("Connected to WebSocket.");
     sessionStorage.setItem("last_room", roomName);

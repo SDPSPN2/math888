@@ -15,6 +15,7 @@ let enemyY= 0;
 const roomName = sessionStorage.getItem("last_room") || "{{ room_name }}";
 
 const username = document.body.getAttribute("data-username");
+// const socket = new WebSocket("ws://127.0.0.1:8001/ws/game/server/");
 const socket = new WebSocket("ws://127.0.0.1:8001/ws/game/server/");
 
 socket.onopen = function () {

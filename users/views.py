@@ -4,6 +4,9 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 
+from django.contrib.auth import logout
+
+
 User = get_user_model()
 
 def register(request):
@@ -41,10 +44,16 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)  
         if user is not None:
             login(request, user)
-            return redirect('game')
+            return redirect('lobby')
             # return redirect('game', username=user.username)
 
         else:
             messages.error(request, "Invalid username or password.") 
 
     return render(request, 'login.html')
+
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('home')
