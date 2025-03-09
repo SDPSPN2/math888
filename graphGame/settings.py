@@ -148,16 +148,14 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = BASE_DIR / 'static'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATICFILES_DIRS = [
+     BASE_DIR / "static",
     BASE_DIR / "game_main" / "static",
     BASE_DIR / "homepage" / "static",
     BASE_DIR / "lobby" / "static",
     BASE_DIR / "users" / "static",
-
-    BASE_DIR / "static",
-
 ]
 
 # Default primary key field type
