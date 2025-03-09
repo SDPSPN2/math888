@@ -5,6 +5,7 @@ class GameConsumer(AsyncWebsocketConsumer):
     rooms = {}
     roomsAndUser = {}
     server = {}
+    roomsState = {}
 
     async def connect(self):
         self.room_name = None  
@@ -29,6 +30,8 @@ class GameConsumer(AsyncWebsocketConsumer):
         sender = data.get("sender", "")
         message = data.get("message", "")
         room_to_join = data.get("room_name", "")
+        recipient = data.get("recipient", "")
+        shootStatus = data.get("shootStatus")
 
         print(sender, command, message)
 
@@ -36,6 +39,66 @@ class GameConsumer(AsyncWebsocketConsumer):
             self.server["SERVERGAME"] = self.channel_name
             # print("serverConnection",self.server)
             # print(len(self.server))
+
+        elif command == "EQUATION":
+            await self.channel_layer.group_send(
+                    self.room_name, 
+                    {
+                        "type": "sendEq",
+                        "command": "EQUATION",
+                        "room_name": self.room_name,
+                        "sender": sender,
+                        "message": message
+                    }
+                )
+            
+        elif command == "SW_ROUND":
+            await self.channel_layer.group_send(
+                    self.room_name, 
+                    {
+                        "type": "swRound",
+                        "command": "SW_ROUND",
+                        "room_name": self.room_name,
+                        "sender": sender,
+                    }
+                )
+            
+        elif command == "ROUND_SET":
+            await self.channel_layer.group_send(
+                    self.room_name, 
+                    {
+                        "type": "roundSet",
+                        "command": "ROUND_SET",
+                        "room_name": self.room_name,
+                        "sender": sender,
+                        "message":message
+                    }
+                )
+            
+        elif command == "endGame":
+            await self.channel_layer.group_send(
+                    self.room_name, 
+                    {
+                        "type": "endGame",
+                        "command": "endGame",
+                        "room_name": self.room_name,
+                        "sender": sender,
+                    }
+                )
+            
+        elif command == "DRAW":
+            await self.channel_layer.group_send(
+                    self.room_name, 
+                    {
+                        "type": "sendDraw",
+                        "command": "DRAW",
+                        "room_name": self.room_name,
+                        "sender": sender,
+                        "message": message,
+                        "recipient": recipient,
+                        "shootStatus":shootStatus
+                    }
+                )
 
         elif command == "READY":
             await self.channel_layer.group_send(
@@ -53,11 +116,28 @@ class GameConsumer(AsyncWebsocketConsumer):
                 self.rooms[new_room] = 0 
                 self.roomsAndUser[new_room] = {}
                 self.roomsAndUser[new_room][sender] = {}
+                self.roomsState[new_room] = {}
+                self.roomsState[new_room]["state"] = False
+                self.roomsState[new_room]["state2"] = False
                 await self.broadcast_room_list()
             await self.change_room(new_room, sender)
             # print("cr", self.server)
 
+        elif command == "CONFIRM_USER":
+            if room_to_join in self.rooms:
+                roomName = room_to_join
+                self.roomsState[roomName]["state"] = True
+
+            print("debug confirm to join",self.roomsState)
+
+        elif command == "CONFIRM_GAME_ROOM":
+            if room_to_join in self.rooms:
+                roomName = room_to_join
+                self.roomsState[roomName]["state2"] = True
+
         elif command == "JOIN_ROOM":
+            # print(self.roomsState)
+
             if room_to_join in self.rooms:
                 await self.change_room(room_to_join, sender)
             else:
@@ -122,18 +202,56 @@ class GameConsumer(AsyncWebsocketConsumer):
                         "message": message
                     }
                 )
+
+    async def endGame(self, event):
+        await self.send(text_data=json.dumps({
+            "command": "endGame",
+            "room_name": event["room_name"],
+            "sender": event["sender"],
+        }))
+
+
+    async def roundSet(self, event):
+        await self.send(text_data=json.dumps({
+            "command": "ROUND_SET",
+            "room_name": event["room_name"],
+            "sender": event["sender"],
+            "message": event["message"]
+        }))
+            
+    async def sendDraw(self, event):
+        await self.send(text_data=json.dumps({
+            "command": "DRAW",
+            "room_name": event["room_name"],
+            "sender": event["sender"],
+            "message": event["message"],
+            "recipient": event["recipient"],
+            "shootStatus": event["shootStatus"]
+        }))
+
+    async def swRound(self, event):
+        await self.send(text_data=json.dumps({
+            "command": "SW_ROUND",
+            "room_name": event["room_name"],
+            "sender": event["sender"],
+        }))
           
+    async def sendEq(self, event):
+        await self.send(text_data=json.dumps({
+            "command": "EQUATION",
+            "room_name": event["room_name"],
+            "sender": event["sender"],
+            "message": event["message"]
+        }))
 
     async def game_set_position(self, event):
-        await self.channel_layer.group_send(
-            event["room_name"], 
-            {
-                "type": "broadcast_game_start",
+        await self.send(text_data=json.dumps({
                 "command": "SET_POSITION",
                 "room_name": event["room_name"],
                 "sender": event["sender"],
                 "message": event["message"]
             }
+        )
         )
 
     async def game_started(self, event):
@@ -212,12 +330,21 @@ class GameConsumer(AsyncWebsocketConsumer):
                     del self.roomsAndUser[self.room_name][key]
                     break
 
-            # print(self.roomsAndUser)
-            # self.roomsAndUser[self.room_name] -= self.sender
-            # if self.rooms[self.room_name] == 0:
-            #     del self.rooms[self.room_name]  # ลบห้องถ้าไม่มีผู้ใช้เหลืออยู่
-            #     await self.broadcast_room_list()
-            self.room_name = None
+        print("debug")
+        roomUserFilter = list(self.roomsAndUser[self.room_name].keys())
+
+        if (self.rooms[self.room_name] == 0 and self.roomsState[self.room_name]["state"] == True):
+            del self.rooms[self.room_name]  # ลบห้องถ้าไม่มีผู้ใช้เหลืออยู่
+            del self.roomsState[self.room_name]
+            await self.broadcast_room_list()
+        else:
+            if(self.rooms[self.room_name] == 1):
+                if(roomUserFilter[0] == self.room_name and self.roomsState[self.room_name]["state2"] == True):
+                    del self.rooms[self.room_name]  # ลบห้องถ้าไม่มีผู้ใช้เหลืออยู่
+                    del self.roomsState[self.room_name]
+                    await self.broadcast_room_list()
+
+                self.room_name = None
 
         # await self.player_count(self.room_name)
 

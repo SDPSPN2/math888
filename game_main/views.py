@@ -2,61 +2,69 @@ from django.shortcuts import render
 from django.http import JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
-from .GameService import GameService
 
-game_service = GameService()  # Initialize GameService instance
 
-def game_view_test(request):
+# def game_view_test(request):
+#     return render(request, "game.html")
+
+# def update_test(request):
+#     return JsonResponse({"status": "success", "message": [[1,1]], "player": [0,0]})
+
+def game_view(request):
     return render(request, "game.html")
 
-def update_test(request):
-    return JsonResponse({"status": "success", "message": [[1, 1]], "player": [0, 0]})
 
-def game_view(request, username):
-    game_service.create_new_player(username)
-    return render(request, "game.html", {'username': username})
+def update(request):
+    return 0
+    # return JsonResponse({"status": "success", "message": game.targetPosition, "player": game.playerPosition})
 
-def update(request, username):
-    # Use the GameService to fetch game status for the specific username
-    status = game_service.get_game_status(username)
-    return JsonResponse({
-        "status": "success", 
-        "message": status['targetPosition'], 
-        "player": status['playerPosition'], 
-        'username': username
-    })
 
-@csrf_exempt
-def delete_enemy(request, username):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        point_to_delete = data.get('point')
+# def solvePoint(expr, playerPoint, maxX):
+#     data = []
 
-        print("run")
-        
-        # Use the GameService to delete the enemy point for the specific username
-        response = game_service.delete_enemy(username, point_to_delete)
-        return JsonResponse(response)
+#     for i in range(playerPoint[0], maxX):
+#         x = i
+#         y = eval(expr)
+#         data.append([x*40,y*40])
 
-# def calculate(request, username):
+#     return data
+
+# @csrf_exempt 
+# def delete_enemy(request):
+#     if request.method == 'POST':
+#         # Parse the incoming JSON data
+#         data = json.loads(request.body)
+#         point_to_delete = data.get('point')
+
+#         print(point_to_delete,  game.targetPosition)
+#         # # Check if the point exists and delete it
+#         if point_to_delete in game.targetPosition:
+#             game.targetPosition.remove(point_to_delete)
+
+#         print(game.targetPosition)
+#         return JsonResponse({'status': 'success', 'message': 'Point deleted successfully'})
+
+#     return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
+
+
+# def calculate(request):
 #     if request.method == 'POST':
 #         data = json.loads(request.body)
-#         equation = data.get('equation', '')
-        
-#         # Use the GameService to calculate the points based on the equation
-#         points_array = game_service.calculate(username,equation)
-#         print(points_array)
+#         equation = data.get('equation', '')  
 
-#         return JsonResponse({"pointsArray": points_array})
+#         # print(equation)
 
+#         points_array = []
 
-def calculate(request, username):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        equation = data.get('equation', '')
-        
-        # Use the GameService to calculate the points based on the equation
-        points_array = game_service.calculate(username,equation)
-        print(points_array)
+#         try:
+#             eq = equation.replace("y=", "").strip()
+#             points_array = solvePoint(str(eq), [0,0], 20)
+#             print(eq)
+           
+#             #     points_array.append([x, y]) 
+#         except Exception as e:
+#             print(f"Error processing equation: {e}")
 
-        return JsonResponse({"pointsArray": points_array})
+#         # print(points_array)
+
+#     return JsonResponse({"pointsArray":points_array})

@@ -13,6 +13,15 @@ socket.onopen = function () {
         "room_name": roomName,
         "sender": username
     }));
+
+    socket.send(JSON.stringify({
+        "command": "CONFIRM_USER",
+        "room_name": roomName,
+        "sender": username
+    }));
+
+    console.log("run")
+
 };
 
 socket.onmessage = function (event) {
@@ -21,6 +30,10 @@ socket.onmessage = function (event) {
 
     if (data.command === "ROOM_CHANGED") {
         document.getElementById("playerCount").textContent = data.player_count;
+      
+    }
+    if(data.command == "ERROR"){
+        window.location.href = "/lobby/";
     }
 
     if(data.command === "START_GAME"){
@@ -37,7 +50,7 @@ function leaveRoom() {
     }));
 
     sessionStorage.removeItem("last_room");
-    window.location.href = "/";
+    window.location.href = "/lobby/";
 }
 
 function startGame() {
@@ -46,7 +59,9 @@ function startGame() {
         "room_name": roomName,
         "sender": username
     }));
-
-   
-
 }
+
+
+window.onload = function () {
+
+};

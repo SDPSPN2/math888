@@ -42,6 +42,8 @@ def login_view(request):
         if user is not None:
             login(request, user)
             return redirect('game')
+            # return redirect('game', username=user.username)
+
         else:
             messages.error(request, "Invalid username or password.") 
 
