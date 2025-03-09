@@ -156,6 +156,8 @@ STATICFILES_DIRS = [
     BASE_DIR / "lobby" / "static",
     BASE_DIR / "users" / "static",
 
+    BASE_DIR / "static",
+
 ]
 
 # Default primary key field type
