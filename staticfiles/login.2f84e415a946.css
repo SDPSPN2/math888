@@ -1,0 +1,95 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    background: rgb(240, 240, 240);
+    
+}
+
+canvas {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    z-index: -1;
+    /* cursor: pointer; */
+}
+
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+.nav-item a {
+    font-size: 1.2rem;
+    margin: 0 10px;
+}
+.login-btn {
+    font-size: 1.1rem;
+}
+
+.register_container{
+    /* border: 2px solid black; */
+    display: block;
+    position: fixed;
+    border-radius: 10px;
+    background-color: #fff;
+    width: 25%;
+    height: 60%;
+
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    padding: 20px;
+    padding-top: 40px;
+
+}
+
+.content{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+
+.registerTitle{
+    text-align: center;
+    /* border:1px solid red */
+}
+
+.register_container h3{
+    font-size: 18px;
+}
+
+.dataInput div{
+   margin-top: 15px;
+   /* border: 1px solid blue; */
+   padding-left: 20px;
+}
+
+.dataInput input{
+    width: 400px;
+    height: 30px;
+ }
+
+.button{
+    /* border: 1px solid red; */
+    margin-top: 50px;
+    text-align: center;
+    
+}
+
+ 
+
+.registerAccount{
+    display: flex;
+    gap: 5px;
+    padding-top: 30px;
+    justify-content: center;
+    /* border: 1px solid rebeccapurple; */
+}
+
+.forget{
+    /* border: 1px solid red; */
+    text-align: right;
+    justify-content: right;
+    right: 0;
+}
