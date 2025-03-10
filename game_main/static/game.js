@@ -16,7 +16,7 @@ const roomName = sessionStorage.getItem("last_room") || "{{ room_name }}";
 
 const username = document.body.getAttribute("data-username");
 // const socket = new WebSocket("ws://127.0.0.1:8001/ws/game/server/");
-const socket = new WebSocket("ws://127.0.0.1:8001/ws/game/server/");
+const socket = new WebSocket("wss://graphgame-821c09cecdee.herokuapp.com/ws/game/server/");
 
 socket.onopen = function () {
     console.log("Connected to WebSocket!!!.");
