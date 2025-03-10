@@ -114,20 +114,18 @@ CHANNEL_LAYERS = {
         "CONFIG": {
             "hosts": [
                 (
-                    os.environ.get('REDIS_URL', 'redis://localhost:6379'),
-                    {
-                        "ssl": False,
-                        "ssl_certfile": None,
-                        "ssl_keyfile": None,
-                        "ssl_ca_certs": None,
-                        "ssl_check_hostname": False,  # ปิดการตรวจสอบ SSL
-                    }
+                    os.environ.get('REDIS_HOST', 'localhost'),
+                    int(os.environ.get('REDIS_PORT', 6379)),
                 ),
             ],
+            "ssl": bool(os.environ.get('REDIS_SSL', False)),  # ตั้งค่า SSL จาก ENV
+            "ssl_certfile": os.environ.get('REDIS_SSL_CERTFILE', None),
+            "ssl_keyfile": os.environ.get('REDIS_SSL_KEYFILE', None),
+            "ssl_ca_certs": os.environ.get('REDIS_SSL_CA_CERTS', None),
+            "ssl_check_hostname": bool(os.environ.get('REDIS_SSL_CHECK_HOSTNAME', False)),
         },
     },
 }
-
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
