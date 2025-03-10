@@ -129,32 +129,22 @@ ASGI_APPLICATION = "graphGame.asgi.application"
 # }
 
 
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "channels_redis.core.RedisChannelLayer",
-#         "CONFIG": {
-#             "hosts": [
-#                 (
-#                     os.environ.get('REDIS_HOST', 'graphgame-821c09cecdee.herokuapp.com'),
-#                     int(os.environ.get('REDIS_PORT', 6379)),
-#                 ),
-#             ],
-#             # Remove ssl configuration
-#         },
-#     },
-# }
-
-
-REDIS_URL = os.getenv("REDIS_URL", "rediss://:p3db4e01a8c3c97dd973a8cfe8458ee01164b0725b1b0971ac2e2aefb92cbf47a@ec2-54-158-151-148.compute-1.amazonaws.com:8520")
-
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": ["rediss://:p3db4e01a8c3c97dd973a8cfe8458ee01164b0725b1b0971ac2e2aefb92cbf47a@ec2-54-158-151-148.compute-1.amazonaws.com:8520"],
+            "hosts": [
+                (
+                    os.environ.get('REDIS_HOST', 'ec2-54-158-151-148.compute-1.amazonaws.com'),
+                    int(os.environ.get('REDIS_PORT', 8520)),
+                ),
+            ],
+            # Remove ssl configuration
         },
     },
 }
+
+
 
 
 
