@@ -62,6 +62,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://graphgame-821c09cecdee.herokuapp.com',
+    'http://graphgame-821c09cecdee.herokuapp.com',  
+]
+
+
 ROOT_URLCONF = 'graphGame.urls'
 
 TEMPLATES = [
