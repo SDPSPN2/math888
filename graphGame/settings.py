@@ -138,7 +138,6 @@ CHANNEL_LAYERS = {
                     int(os.environ.get('REDIS_PORT', 6379)),  # ใช้พอร์ต 6379 สำหรับ SSL
                 ),
             ],
-            "SSL": True,  # เปิดใช้งาน SSL
         },
     },
 }
