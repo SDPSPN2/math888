@@ -13,7 +13,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         await self.channel_layer.group_add("lobby", self.channel_name)
         await self.channel_layer.group_add("server", self.channel_name)
-        # print("connect",self.channel_name)
+        print("connect",self.channel_name)
 
 
         await self.send_room_list()

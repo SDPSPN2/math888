@@ -96,16 +96,62 @@ WSGI_APPLICATION = 'graphGame.wsgi.application'
 ASGI_APPLICATION = "graphGame.asgi.application"
 
 
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+#         },
+#     },
+# }
+
+# import redis
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [
+#                 (
+#                     os.environ.get('REDIS_URL', 'redis://localhost:6379'),
+#                     {
+#                         "ssl": False,
+#                         "ssl_certfile": None,
+#                         "ssl_keyfile": None,
+#                         "ssl_ca_certs": None,
+#                         "ssl_check_hostname": False,  # ปิดการตรวจสอบ SSL
+#                     }
+#                 ),
+#             ],
+#         },
+#     },
+# }
+
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [
+#                 (
+#                     os.environ.get('REDIS_HOST', 'graphgame-821c09cecdee.herokuapp.com'),
+#                     int(os.environ.get('REDIS_PORT', 6379)),
+#                 ),
+#             ],
+#             # Remove ssl configuration
+#         },
+#     },
+# }
+
+
+REDIS_URL = os.getenv("REDIS_URL", "rediss://:p3db4e01a8c3c97dd973a8cfe8458ee01164b0725b1b0971ac2e2aefb92cbf47a@ec2-54-158-151-148.compute-1.amazonaws.com:8520")
+
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [
-                (
-                    os.environ.get('REDIS_HOST', 'graphgame-821c09cecdee.herokuapp.com'),
-                    int(os.environ.get('REDIS_PORT', 6379)),
-                ),
-            ],
+            "hosts": [REDIS_URL],
         },
     },
 }
@@ -168,6 +214,15 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "lobby", "static"),
     os.path.join(BASE_DIR, "users", "static"),
 ]
+# STATIC_URL = '/static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "static"),
+
+#     ]
+
+# Default primary key field type
+# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
