@@ -18,7 +18,7 @@ class GameController:
         self.userInRoom = userInRoom
 
         self.ws = websocket.WebSocketApp(
-            "ws://graphgame-821c09cecdee.herokuapp.com/ws/game/server/",
+            "wss://graphgame-821c09cecdee.herokuapp.com/ws/game/server/",
             on_message=self.on_message,
             on_open=self.on_open
         )
