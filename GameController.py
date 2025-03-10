@@ -215,7 +215,7 @@ def on_message(ws, message):
     counter = 0
 
     if command == "GAME_START_CONFIG" and roomName not in rooms:
-        rooms.append(roomName)
+        #rooms.append(roomName)
         # print("run", roomUser)
         GC = GameController(10, 10, roomName, roomUser)
         t = threading.Thread(target=GC.run)
