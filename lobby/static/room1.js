@@ -2,9 +2,9 @@ const roomName = sessionStorage.getItem("last_room") || "{{ room_name }}";
 document.getElementById("roomName").textContent = roomName;
 
 const username = document.body.getAttribute("data-username");
-// const socket = new WebSocket("ws://127.0.0.1:8001/ws/game/server/");
+const socket = new WebSocket("wss://" + window.location.host + "/ws/game/server/");
 
-const socket = new WebSocket("wss://graphgame-821c09cecdee.herokuapp.com/ws/game/server/");
+// const socket = new WebSocket("wss://graphgame-821c09cecdee.herokuapp.com/ws/game/server/");
 console.log("run")
 
 socket.onopen = function () {
