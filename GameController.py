@@ -233,7 +233,7 @@ def on_open(ws):
     ws.send(message)
   
 ws = websocket.WebSocketApp(
-    f"wss://{host}/ws/game/server/",
+    f"wss://graphgame-821c09cecdee.herokuapp.com/ws/game/server/",
     on_message=on_message,
     on_open=on_open
 )

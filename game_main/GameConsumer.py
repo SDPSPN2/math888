@@ -17,6 +17,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
 
         await self.send_room_list()
+        self.broadcast_room_list_test()
 
     async def disconnect(self, close_code):
         if self.room_name:
@@ -360,6 +361,15 @@ class GameConsumer(AsyncWebsocketConsumer):
             {
                 "type": "room_list_update",
                 "rooms": list(self.rooms.keys())
+            }
+        )
+
+    async def broadcast_room_list_test(self):
+        await self.channel_layer.group_send(
+            "lobby",
+            {
+                "type": "room_list_update",
+                "rooms": [2,3,4]
             }
         )
 
