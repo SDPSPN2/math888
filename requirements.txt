@@ -6,7 +6,6 @@ django-bootstrap5==24.3
 pillow==10.4.0
 redis==5.2.1
 uvicorn==0.33.0
-websocket==0.2.1
 websockets==13.1
 websocket-client==1.8.0
 whitenoise==6.7.0
