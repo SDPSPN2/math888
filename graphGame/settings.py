@@ -97,15 +97,36 @@ ASGI_APPLICATION = "graphGame.asgi.application"
 
 
 
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+#         },
+#     },
+# }
+
+# import redis
+
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+            "hosts": [
+                (
+                    os.environ.get('REDIS_URL', 'redis://localhost:6379'),
+                    {
+                        "ssl": True,
+                        "ssl_certfile": None,
+                        "ssl_keyfile": None,
+                        "ssl_ca_certs": None,
+                        "ssl_check_hostname": False,  # ปิดการตรวจสอบ SSL
+                    }
+                ),
+            ],
         },
     },
 }
-
 
 
 # Database
