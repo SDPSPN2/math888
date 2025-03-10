@@ -128,24 +128,21 @@ ASGI_APPLICATION = "graphGame.asgi.application"
 #     },
 # }
 
-
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [
                 (
-                    os.environ.get('REDIS_HOST', 'ec2-54-158-151-148.compute-1.amazonaws.com'),
-                    int(os.environ.get('REDIS_PORT', 8520)),
+                    os.environ.get('REDIS_HOST', 'graphgame-821c09cecdee.herokuapp.com'),
+                    int(os.environ.get('REDIS_PORT', 6379)),  # ใช้พอร์ต 6379 สำหรับ SSL
                 ),
             ],
-            # Remove ssl configuration
+            "PASSWORD": os.environ.get('REDIS_PASSWORD', ''),  # หากมี password ใช้
+            "SSL": True,  # เปิดใช้งาน SSL
         },
     },
 }
-
-
-
 
 
 # Database
