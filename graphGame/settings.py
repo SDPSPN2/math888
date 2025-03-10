@@ -116,7 +116,7 @@ CHANNEL_LAYERS = {
                 (
                     os.environ.get('REDIS_URL', 'redis://localhost:6379'),
                     {
-                        "ssl": True,
+                        "ssl": False,
                         "ssl_certfile": None,
                         "ssl_keyfile": None,
                         "ssl_ca_certs": None,
