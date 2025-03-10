@@ -1,6 +1,6 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-
+import asyncio
 class GameConsumer(AsyncWebsocketConsumer):
     rooms = {}
     roomsAndUser = {}
@@ -16,14 +16,20 @@ class GameConsumer(AsyncWebsocketConsumer):
         print("connect",self.channel_name)
 
 
-        await self.send_room_list()
+        # await self.send_room_list()
         self.broadcast_room_list_test()
+        self.keep_alive_task = asyncio.create_task(self.keep_alive())
 
     async def disconnect(self, close_code):
         if self.room_name:
             # pass
             await self.leave_room()
         # print("disconnect",self.channel_name, close_code)
+
+    async def keep_alive(self):
+        while True:
+            await asyncio.sleep(25)  # ป้องกัน timeout
+            await self.send(text_data=json.dumps({"ping": "keep-alive"}))
             
     async def receive(self, text_data):
         data = json.loads(text_data)
