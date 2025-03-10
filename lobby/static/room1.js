@@ -5,7 +5,7 @@ const username = document.body.getAttribute("data-username");
 const socket = new WebSocket("wss://" + window.location.host + "/ws/game/server/");
 
 // const socket = new WebSocket("wss://graphgame-821c09cecdee.herokuapp.com/ws/game/server/");
-console.log("run")
+console.log("run test")
 
 socket.onopen = function () {
     console.log("Connected to WebSocket.");

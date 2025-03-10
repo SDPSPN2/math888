@@ -1,5 +1,5 @@
 const username = document.body.getAttribute("data-username");
-console.log(username, "runtime");
+console.log(username, "runtime_test");
 const socket = new WebSocket("wss://" + window.location.host + "/ws/game/server/");
 // const socket = new WebSocket("ws://127.0.0.1:8001/ws/game/server/");
 // const socket = new WebSocket("ws://graphgame-821c09cecdee.herokuapp.com/ws/game/server/");

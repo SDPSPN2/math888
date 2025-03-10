@@ -1,6 +1,10 @@
 from GameEnvironment import GameEnvironment
 from Player import Player
 import websocket,json,threading,random
+# import websockets
+import os
+
+host = os.environ.get("HOST", "graphgame-821c09cecdee.herokuapp.com")
 
 class GameController:
     def __init__(self, maxX, maxY, roomName, userInRoom):
@@ -18,7 +22,7 @@ class GameController:
         self.userInRoom = userInRoom
 
         self.ws = websocket.WebSocketApp(
-            "wss://graphgame-821c09cecdee.herokuapp.com/ws/game/server/",
+           f"wss://{host}/ws/game/server/",
             on_message=self.on_message,
             on_open=self.on_open
         )
@@ -229,7 +233,7 @@ def on_open(ws):
     ws.send(message)
   
 ws = websocket.WebSocketApp(
-    f"wss://graphgame-821c09cecdee.herokuapp.com/ws/game/server/",
+    f"wss://{host}/ws/game/server/",
     on_message=on_message,
     on_open=on_open
 )
