@@ -2,7 +2,7 @@ const username = document.body.getAttribute("data-username");
 console.log(username);
 
 // const socket = new WebSocket("ws://127.0.0.1:8001/ws/game/server/");
-const socket = new WebSocket("wss://graphgame-821c09cecdee.herokuapp.com/ws/game/server/");
+const socket = new WebSocket("ws://graphgame-821c09cecdee.herokuapp.com/ws/game/server/");
 console.log("run")
 socket.onopen = function () {
     console.log("Connected to the WebSocket server!");
