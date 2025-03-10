@@ -17,7 +17,11 @@ class GameConsumer(AsyncWebsocketConsumer):
 
 
         # await self.send_room_list()
-        self.broadcast_room_list_test()
+        await self.send(text_data=json.dumps({
+            "command": "TEST",
+            "message": "This is a test message"
+        }))
+
         self.keep_alive_task = asyncio.create_task(self.keep_alive())
 
     async def disconnect(self, close_code):
