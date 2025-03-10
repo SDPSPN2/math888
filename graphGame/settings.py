@@ -96,53 +96,20 @@ WSGI_APPLICATION = 'graphGame.wsgi.application'
 ASGI_APPLICATION = "graphGame.asgi.application"
 
 
-
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "channels_redis.core.RedisChannelLayer",
-#         "CONFIG": {
-#             "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
-#         },
-#     },
-# }
-
-# import redis
-
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "channels_redis.core.RedisChannelLayer",
-#         "CONFIG": {
-#             "hosts": [
-#                 (
-#                     os.environ.get('REDIS_URL', 'redis://localhost:6379'),
-#                     {
-#                         "ssl": False,
-#                         "ssl_certfile": None,
-#                         "ssl_keyfile": None,
-#                         "ssl_ca_certs": None,
-#                         "ssl_check_hostname": False,  # ปิดการตรวจสอบ SSL
-#                     }
-#                 ),
-#             ],
-#         },
-#     },
-# }
-
-
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [
                 (
-                    os.environ.get('REDIS_HOST', 'localhost'),
+                    os.environ.get('REDIS_HOST', 'graphgame-821c09cecdee.herokuapp.com'),
                     int(os.environ.get('REDIS_PORT', 6379)),
                 ),
             ],
-            # Remove ssl configuration
         },
     },
 }
+
 
 
 # Database
@@ -201,15 +168,6 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "lobby", "static"),
     os.path.join(BASE_DIR, "users", "static"),
 ]
-# STATIC_URL = '/static/'
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, "static"),
-
-#     ]
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
