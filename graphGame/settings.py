@@ -86,11 +86,11 @@ TEMPLATES = [
     },
 ]
 
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "channels.layers.InMemoryChannelLayer"
-#     },
-# }
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    },
+}
 
 WSGI_APPLICATION = 'graphGame.wsgi.application'
 ASGI_APPLICATION = "graphGame.asgi.application"
@@ -128,19 +128,19 @@ ASGI_APPLICATION = "graphGame.asgi.application"
 #     },
 # }
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [
-                (
-                    os.environ.get('REDIS_HOST', 'graphgame-821c09cecdee.herokuapp.com'),
-                    int(os.environ.get('REDIS_PORT', 6379)),  # ใช้พอร์ต 6379 สำหรับ SSL
-                ),
-            ],
-        },
-    },
-}
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [
+#                 (
+#                     os.environ.get('REDIS_HOST', 'graphgame-821c09cecdee.herokuapp.com'),
+#                     int(os.environ.get('REDIS_PORT', 6379)),  # ใช้พอร์ต 6379 สำหรับ SSL
+#                 ),
+#             ],
+#         },
+#     },
+# }
 
 
 # Database
